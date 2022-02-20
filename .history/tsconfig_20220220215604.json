@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["dom", "esnext"],
+    "strict": true,
+    "sourceMap": true,
+    "target": "esnext",
+    "typeRoots": ["node_modules/@types", "./src/types"],
+    "paths": {
+      "@/*": ["./src/*/*"]
+      // "@/components": ["src/components/"],
+      // "@/utils": ["src/utils/*"],
+      // "@/assets": ["src/assets/*"]
+    }
+  }
+  // "include": ["./src/**/*", "./src/app.tsx"]
+}

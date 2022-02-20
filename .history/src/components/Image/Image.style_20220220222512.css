@@ -1,0 +1,16 @@
+.bipit {
+  animation-name: bip;
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+}
+
+@keyframes bip {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
