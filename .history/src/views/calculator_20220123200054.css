@@ -1,0 +1,42 @@
+.calculator {
+  width: 40vw;
+  min-height: 70vh;
+  /* From https://css.glass */
+  background: rgba(36, 36, 37, 0.76);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(16.5px);
+  -webkit-backdrop-filter: blur(16.5px);
+  border: 1px solid rgba(36, 36, 37, 0.58);
+  padding: 1rem;
+  border-radius: 8px;
+}
+.screen {
+  box-sizing: border-box;
+  height: 12vh;
+  background-color: rgba(15, 15, 15, 0.76);
+  width: 100%;
+  padding: 0rem 1.5rem;
+  padding-top: 0.5rem;
+  margin-bottom: 2rem;
+}
+.screen p {
+  color: white;
+  font-weight: 700;
+  font-size: 1.5em;
+}
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  grid-gap: 1rem;
+}
+
+.key {
+  width: 5vh;
+  height: 5vh;
+  background-color: blue;
+}
+.longer {
+  height: 9vh;
+  background-color: blueviolet;
+}

@@ -1,0 +1,13 @@
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+}
+
+.key {
+  width: 5vh;
+  height: 5vh;
+  background-color: blue;
+}
+.longer {
+  height: 9vh;
+}
