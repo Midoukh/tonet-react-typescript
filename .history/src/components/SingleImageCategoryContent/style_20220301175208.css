@@ -1,0 +1,15 @@
+.grid-images-randome-sizezs {
+  /* Prevent vertical gaps */
+  line-height: 0;
+
+  -webkit-column-count: 5;
+  -webkit-column-gap: 0px;
+  -moz-column-count: 5;
+  -moz-column-gap: 0px;
+  column-count: 5;
+  column-gap: 0px;
+}
+.grid-images-randome-sizezs > img {
+  width: 100% !important;
+  height: auto !important;
+}
