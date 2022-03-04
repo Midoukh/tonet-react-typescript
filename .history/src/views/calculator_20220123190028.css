@@ -1,8 +1,0 @@
-.keys {
-  display: grid;
-  grid-template-columns: repeat(4, auto);
-}
-
-.key {
-  padding: 2rem;
-}
