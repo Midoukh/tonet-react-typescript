@@ -1,13 +1,16 @@
 import React, { FC, useEffect, useState } from "react";
-import ReactImage from "../Image/Image";
+import { useSelector } from "react-redux";
 import { Flex, Image } from "@chakra-ui/react";
+import ReactImage from "../Image/Image";
 import GridLoader from "react-spinners/GridLoader";
 import { pixelsApi } from "../../lib/axios";
 import { generateRandomNumber } from "../../utils/helpers/generator";
 
 const Comp: FC = ({}) => {
-  const [imageSrc, setImageSrc] = useState("");
   const [imageMainColor, setImageMainColor] = useState("");
+  const { TargetImage } = useSelector((state: StoreState) => state);
+  const [imageSrc, setImageSrc] = useState("");
+
   const handleGetCuratedPhoto = async (signal: any) => {
     try {
       const response = await pixelsApi.get("/curated", {
@@ -25,16 +28,19 @@ const Comp: FC = ({}) => {
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
-    handleGetCuratedPhoto(signal);
+    if (!TargetImage) handleGetCuratedPhoto(signal);
+    console.log("rerendering the targetImageDisplayer");
+    console.log(TargetImage);
+    if (TargetImage) setImageSrc(TargetImage);
     return () => abortController.abort();
-  }, []);
+  }, [TargetImage]);
 
   return (
     <Flex h="100%" w="100%" justify="center" align="center">
       {imageSrc === "" ? (
         <GridLoader size={15} margin={1} color={imageMainColor} />
       ) : (
-        <Image h="100vh" w="auto" src={imageSrc} />
+        <Image maxH="100vh" h="auto" w="auto" src={imageSrc} />
       )}
     </Flex>
   );

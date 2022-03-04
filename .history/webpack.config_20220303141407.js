@@ -2,7 +2,7 @@ const prod = process.env.NODE_ENV === "production";
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const path = require("path");
 
 module.exports = {
@@ -10,6 +10,9 @@ module.exports = {
   entry: "./src/index.tsx",
   output: {
     path: __dirname + "/dist/",
+  },
+  experiments: {
+    topLevelAwait: true,
   },
   module: {
     rules: [
@@ -25,15 +28,26 @@ module.exports = {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
+
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+      },
     ],
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
-      "@assets": path.resolve(__dirname, "src/assets"),
-      "@components": path.resolve(__dirname, "src/components"),
-      // ...etc
+      "@/": path.resolve(__dirname, "src"),
+      "@/assets": path.resolve(__dirname, "src/assets"),
+      "@/components": path.resolve(__dirname, "src/components/*"),
+      "@/views": path.resolve(__dirname, "src/views/*"),
+      "@/utils": path.resolve(__dirname, "src/utils/*"),
     },
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".json", ".css", ".scss"],
+    modules: [
+      path.resolve(__dirname, "src"),
+      path.resolve(__dirname, "node_modules"),
+    ],
   },
   devtool: prod ? undefined : "source-map",
   plugins: [
@@ -41,5 +55,8 @@ module.exports = {
       template: "./public/index.html",
     }),
     new MiniCssExtractPlugin(),
+    new TsconfigPathsPlugin({
+      extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
+    }),
   ],
 };

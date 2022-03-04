@@ -11,6 +11,9 @@ module.exports = {
   output: {
     path: __dirname + "/dist/",
   },
+  experiments: {
+    topLevelAwait: true,
+  },
   module: {
     rules: [
       {
