@@ -20,7 +20,7 @@ const Upload: FC<Props> = ({ label }) => {
   const localStrge = new LocalStrge();
   const targetImages: any = lengthLimiter(
     JSON.parse(localStrge.get("targets") || "[]") || [],
-    3
+    5
   );
 
   const handleOnImageChange = async (e: InputEvent): Promise<void> => {

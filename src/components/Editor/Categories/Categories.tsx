@@ -6,8 +6,6 @@ import { IMAGES_CATEGORIES } from "../../../utils/constants";
 import ImageCard from "../../ImageCard/ImageCard";
 
 const Categories: FC = () => {
-  useEffect(() => {}, []);
-  console.log("[Categories] rerender");
   return (
     <Grid
       templateColumns="repeat(3, auto)"

@@ -13,21 +13,27 @@ const TargetImageURl = await base64ToURL(
   TargetImageBase64 !== {} ? TargetImageBase64.base64 : ""
 );
 const reportBugVis: boolean = false;
-
+const currentImageCategory: string = "";
 const initialState: StoreState = {
   isFetched,
   SingleImageCategoriesListOfImages,
   TargetImage: TargetImageURl,
   reportBugVis,
+  currentImageCategory,
 };
 
 const reducer = (state: any = initialState, action: any) => {
   switch (action.type) {
     case actionTypes.IS_FETCHD_IMAGE_CATEGORY:
-      console.log("[reducer]", action);
       return {
         ...state,
         isFetched: action.payload,
+      };
+    case actionTypes.SET_CURRENT_IMAGE_CATEGORY:
+      return {
+        ...state,
+        isFetched: true,
+        currentImageCategory: action.category,
       };
     case actionTypes.GET_SINGLE_IMAGE_CONTENT:
       return {

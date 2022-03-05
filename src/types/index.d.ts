@@ -18,6 +18,7 @@ interface StoreState {
   SingleImageCategoriesListOfImages: Image[];
   TargetImage: string;
   reportBugVis: boolean;
+  currentImageCategory: string;
 }
 
 interface ActionType {

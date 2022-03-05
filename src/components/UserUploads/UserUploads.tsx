@@ -9,13 +9,25 @@ import UploadedItem from "./UploadedItem/UploadedItem";
 const UserUploads: FC = () => {
   const { TargetImage } = useSelector((state: StoreState) => state);
   const localStrge = new LocalStrge();
-  const uploads = JSON.parse(localStrge.get("targets") || "[]") || [];
-  const [empty] = useState<boolean>(uploads.length === 0);
-  console.log("Rerendering the UserUploads", uploads.length);
-  useEffect(() => {}, [TargetImage]);
+  const [uploads, setUploads] = useState(
+    JSON.parse(localStrge.get("targets") || "[]") || []
+  );
+  const [empty, setEmpty] = useState<boolean>(uploads.length === 0);
+  const handleRemoveItem = (id: string) => {
+    localStrge.remove("targets", id);
+  };
+
+  useEffect(() => {
+    //rerender after the deletion of one item
+    setUploads([]);
+    const uptadetedUserUploads =
+      JSON.parse(localStrge.get("targets") || "[]") || [];
+    setUploads(uptadetedUserUploads);
+    console.log("Rerendering the comp [UserUploads]");
+  }, [uploads.length, TargetImage]);
   return (
-    <Box p="1rem 0">
-      {empty || !TargetImage ? (
+    <Box p="1rem 0" maxH="75vh" overflowY="scroll">
+      {empty ? (
         <Flex w="100%" h="70vh" justify="center" align="center">
           <FcInfo />
           <Text ml=".5rem" color="whiteAlpha.800">
@@ -32,11 +44,20 @@ const UserUploads: FC = () => {
           >
             HISTORY
           </Heading>
-          {uploads.map(({ base64, id, name, date }: UploadedItem) => (
-            <ListItem key={uuid()}>
-              <UploadedItem src={base64} id={id} date={date} name={name} />
-            </ListItem>
-          ))}
+          {uploads.map(
+            ({ base64, id, name, date }: UploadedItem, i: number) => (
+              <ListItem key={uuid()}>
+                <UploadedItem
+                  handleRemoveItem={handleRemoveItem}
+                  src={base64}
+                  id={id}
+                  date={date}
+                  name={name}
+                  active={i === uploads.length - 1}
+                />
+              </ListItem>
+            )
+          )}
         </List>
       )}
     </Box>

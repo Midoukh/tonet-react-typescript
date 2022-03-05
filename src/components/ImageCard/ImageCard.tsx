@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   fetchImageCategory,
   getSingleImageContent,
+  setCurrentImageCategory,
 } from "../../store/actionCreators";
 import { pixelsApi } from "../../lib/axios";
 import { FilteringArrOfObjs } from "../../utils/helpers/arrays";
@@ -31,6 +32,7 @@ const ImageCard: FC<props> = ({ src, label, skeletonColor, endpoint }) => {
   };
   const handleFetchCategoryContent = async () => {
     setIsFetching(true);
+    dispatch(setCurrentImageCategory(label));
     try {
       const response = await pixelsApi.get(
         `${endpoint}?type=Photo&per_page=60&width=3607`

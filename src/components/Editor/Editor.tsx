@@ -38,7 +38,7 @@ const Editor = ({}) => {
           <Flex direction="row" alignItems="center" cursor="pointer">
             <GoBackIcon size={30} color="#e2e2e2" onClick={handleGoBack} />
             <Text ml=".5rem" color="#e2e2e2">
-              Back
+              {gState.currentImageCategory}
             </Text>
           </Flex>
         ) : (

@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import ReactImage from "../../Image/Image";
 import { LocalStrge } from "../../../utils/helpers/localStrge";
@@ -10,15 +10,19 @@ interface Props {
   name: string;
   id: string;
   active?: boolean;
+  handleRemoveItem(id: string): void;
 }
-const Item: FC<Props> = ({ src, date, name, id, active = false }) => {
-  const localStrge = new LocalStrge();
-  const handleRemoveItem = () => {
-    localStrge.remove("targets", id);
-  };
+const Item: FC<Props> = ({
+  src,
+  date,
+  name,
+  id,
+  active = false,
+  handleRemoveItem,
+}) => {
   return (
     <Flex
-      align="flex-start"
+      align="center"
       bg="#112849"
       color="#ffffffd6"
       p=".5rem"
@@ -29,24 +33,25 @@ const Item: FC<Props> = ({ src, date, name, id, active = false }) => {
     >
       <ReactImage
         srcImg={src}
-        maxH="90px"
+        maxH="75px"
         height="auto"
         width="auto"
         radius="10px"
       />
-      <Flex direction="column">
-        <span
-          style={{
-            margin: "0 1rem",
-          }}
-        >
+      <Flex direction="column" align="center" overflow="hidden">
+        <Text m="0 1rem" color="whiteAlpha.500">
           {date}
-        </span>
-        <Text>{name}</Text>
+        </Text>
+        <Text m="0 1rem">{name}</Text>
+        {active && (
+          <Box bg="blue.500" p=".3rem" cursor="pointer" borderRadius="10px">
+            Active
+          </Box>
+        )}
       </Flex>
       <AiOutlineCloseCircle
-        onClick={handleRemoveItem}
-        size={40}
+        onClick={() => handleRemoveItem(id)}
+        size={35}
         style={{
           position: "absolute",
           top: ".5rem",

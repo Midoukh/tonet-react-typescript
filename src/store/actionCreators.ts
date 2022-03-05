@@ -7,6 +7,13 @@ export const fetchImageCategory = (isFetched: boolean): object => {
   };
 };
 
+export const setCurrentImageCategory = (category: string): object => {
+  return {
+    type: actionTypes.SET_CURRENT_IMAGE_CATEGORY,
+    payload: category,
+  };
+};
+
 export const getSingleImageContent = (arr: object[]): object => {
   return {
     type: actionTypes.GET_SINGLE_IMAGE_CONTENT,
