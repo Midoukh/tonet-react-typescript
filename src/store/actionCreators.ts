@@ -1,23 +1,14 @@
 import * as actionTypes from "./actionTypes";
 
-export const fetchImageCategory = (isFetched: boolean): object => {
+export const fetchImageCategory = (fetchCategory: FetchCategory): object => {
   return {
-    type: actionTypes.IS_FETCHD_IMAGE_CATEGORY,
-    payload: isFetched,
-  };
-};
-
-export const setCurrentImageCategory = (category: string): object => {
-  return {
-    type: actionTypes.SET_CURRENT_IMAGE_CATEGORY,
-    payload: category,
-  };
-};
-
-export const getSingleImageContent = (arr: object[]): object => {
-  return {
-    type: actionTypes.GET_SINGLE_IMAGE_CONTENT,
-    payload: arr,
+    type: actionTypes.FETCHD_IMAGE_CATEGORY,
+    payload: {
+      isFetched: fetchCategory.isFetched,
+      currentImageCategory: fetchCategory.currentImageCategory,
+      SingleImageCategoriesListOfImages:
+        fetchCategory.SingleImageCategoriesListOfImages,
+    },
   };
 };
 

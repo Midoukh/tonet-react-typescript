@@ -4,6 +4,7 @@ import Layout from "./views/Layout/Layout";
 import { sleep } from "./utils/helpers/time";
 import { ChakraProvider } from "@chakra-ui/react";
 import BurgerMenu from "./components/BurgerMenu/BurgerMenu";
+import "react-toastify/dist/ReactToastify.css";
 
 interface appTypes {
   title?: string;

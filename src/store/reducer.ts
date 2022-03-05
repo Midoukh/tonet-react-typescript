@@ -14,32 +14,28 @@ const TargetImageURl = await base64ToURL(
 );
 const reportBugVis: boolean = false;
 const currentImageCategory: string = "";
-const initialState: StoreState = {
+const fetchCategory = {
+  currentImageCategory,
   isFetched,
   SingleImageCategoriesListOfImages,
+};
+const initialState: StoreState = {
   TargetImage: TargetImageURl,
   reportBugVis,
-  currentImageCategory,
+  fetchCategory,
 };
 
 const reducer = (state: any = initialState, action: any) => {
   switch (action.type) {
-    case actionTypes.IS_FETCHD_IMAGE_CATEGORY:
+    case actionTypes.FETCHD_IMAGE_CATEGORY:
       return {
         ...state,
-        isFetched: action.payload,
-      };
-    case actionTypes.SET_CURRENT_IMAGE_CATEGORY:
-      return {
-        ...state,
-        isFetched: true,
-        currentImageCategory: action.category,
-      };
-    case actionTypes.GET_SINGLE_IMAGE_CONTENT:
-      return {
-        ...state,
-        isFetched: true,
-        SingleImageCategoriesListOfImages: action.payload,
+        fetchCategory: {
+          isFetched: action.payload.isFetched,
+          currentImageCategory: action.payload.currentImageCategory,
+          SingleImageCategoriesListOfImages:
+            action.payload.SingleImageCategoriesListOfImages,
+        },
       };
     case actionTypes.UPLOAD_TARGET_IMAGE:
       return {

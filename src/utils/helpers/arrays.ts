@@ -4,15 +4,15 @@ interface IOBJ<TValue> {
 export const FilteringArrOfObjs = (
   arr: IOBJ<string>[],
   props: string[]
-): object[] => {
+): Image[] => {
   //arr [{}, {}, {}]
   //props : ['src', 'url', 'height']
-  let newArray: IOBJ<any>[] = [];
+  let newArray: Image[] = [];
 
   //this line loop though the props
   for (let i = 0; i < arr.length; i++) {
     //we have access to each element in the array
-    const obj: IOBJ<string> = {};
+    const obj: any = {};
     const keys = Object.keys(arr[i]);
     keys.forEach((key) => {
       props.forEach((prop) => {

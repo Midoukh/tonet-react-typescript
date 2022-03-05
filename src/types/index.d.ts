@@ -12,13 +12,16 @@ interface Image {
   id: number;
   type: string;
 }
+interface FetchCategory {
+  isFetched: boolean;
+  currentImageCategory: string;
+  SingleImageCategoriesListOfImages: Image[];
+}
 
 interface StoreState {
-  isFetched: boolean;
-  SingleImageCategoriesListOfImages: Image[];
   TargetImage: string;
   reportBugVis: boolean;
-  currentImageCategory: string;
+  fetchCategory: FetchCategory;
 }
 
 interface ActionType {
@@ -31,4 +34,12 @@ interface UploadedItem {
   date: Date;
   id: string;
   name: string;
+}
+
+interface Favorite {
+  label: string;
+  id: string;
+  src: string;
+  endpoint: string;
+  skeletonColor: string;
 }

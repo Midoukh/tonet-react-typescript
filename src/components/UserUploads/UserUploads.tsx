@@ -2,10 +2,10 @@ import React, { FC, useEffect, useState } from "react";
 import { Box, Flex, Text, List, ListItem, Heading } from "@chakra-ui/react";
 import { v4 as uuid } from "uuid";
 import { LocalStrge } from "../../utils/helpers/localStrge";
-import ReactImage from "../Image/Image";
 import { FcInfo } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import UploadedItem from "./UploadedItem/UploadedItem";
+
 const UserUploads: FC = () => {
   const { TargetImage } = useSelector((state: StoreState) => state);
   const localStrge = new LocalStrge();

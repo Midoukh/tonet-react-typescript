@@ -7,7 +7,9 @@ import "./style.css";
 import { MdGridGoldenratio } from "react-icons/md";
 const Content: FC = ({}) => {
   const gState = useSelector((state: StoreState) => state);
-  const [Images] = useState(gState.SingleImageCategoriesListOfImages || []);
+  const [Images] = useState(
+    gState.fetchCategory.SingleImageCategoriesListOfImages || []
+  );
 
   return (
     <Grid

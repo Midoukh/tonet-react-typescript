@@ -4,11 +4,7 @@ import { Box, Text, Skeleton, CircularProgress } from "@chakra-ui/react";
 import GridLoader from "react-spinners/GridLoader";
 import { useSelector, useDispatch } from "react-redux";
 
-import {
-  fetchImageCategory,
-  getSingleImageContent,
-  setCurrentImageCategory,
-} from "../../store/actionCreators";
+import { fetchImageCategory } from "../../store/actionCreators";
 import { pixelsApi } from "../../lib/axios";
 import { FilteringArrOfObjs } from "../../utils/helpers/arrays";
 
@@ -32,28 +28,28 @@ const ImageCard: FC<props> = ({ src, label, skeletonColor, endpoint }) => {
   };
   const handleFetchCategoryContent = async () => {
     setIsFetching(true);
-    dispatch(setCurrentImageCategory(label));
     try {
       const response = await pixelsApi.get(
         `${endpoint}?type=Photo&per_page=60&width=3607`
       );
-      dispatch(fetchImageCategory(true));
-      const filteredArrayOfObj = FilteringArrOfObjs(response.data.media, [
-        "url",
-        "src",
-        "id",
-        "height",
-        "width",
-        "type",
-      ]);
-      dispatch(getSingleImageContent(filteredArrayOfObj));
+
+      const filteredArrayOfObj: Image[] = FilteringArrOfObjs(
+        response.data.media,
+        ["url", "src", "id", "height", "width", "type"]
+      );
+      const newFetchCategoryState: FetchCategory = {
+        isFetched: true,
+        currentImageCategory: label,
+        SingleImageCategoriesListOfImages: filteredArrayOfObj,
+      };
+      dispatch(fetchImageCategory(newFetchCategoryState));
       setIsFetching(false);
     } catch (error) {
       console.log(error);
       setIsFetching(false);
     }
   };
-  useEffect(() => {}, []);
+
   return (
     <Box
       position="relative"
