@@ -8,6 +8,7 @@ import { lengthLimiter } from "../../utils/helpers/arrays";
 import { v4 as uuid } from "uuid";
 import { uploadTargetImage as uploadImageAction } from "../../store/actionCreators";
 import { imageToBase64 } from "../../utils/helpers/imageMan";
+import { toast } from "react-toastify";
 
 interface Props {
   label?: string;
@@ -15,6 +16,7 @@ interface Props {
 type InputEvent = ChangeEvent<HTMLInputElement>;
 
 const Upload: FC<Props> = ({ label }) => {
+  const notify = (message: string) => toast(message);
   const [imageName, setImageName] = useState("");
   const dispatch = useDispatch();
   const localStrge = new LocalStrge();
@@ -24,31 +26,37 @@ const Upload: FC<Props> = ({ label }) => {
   );
 
   const handleOnImageChange = async (e: InputEvent): Promise<void> => {
-    //get the image file from the user
-    const uploadedImage = e.target.files![0];
+    try {
+      //get the image file from the user
+      const uploadedImage = e.target.files![0];
 
-    //convert it to a base64 so we can store it locally
-    const base64 = (await imageToBase64(uploadedImage)) || "";
+      //convert it to a base64 so we can store it locally
+      const base64 = (await imageToBase64(uploadedImage)) || "";
 
-    //create a URL from the image to be use as a src for <img />
-    //because base64 are to fucking ugly and big
-    const localImageUrl = window.URL.createObjectURL(uploadedImage);
-    dispatch(uploadImageAction(localImageUrl));
-    setImageName(uploadedImage.name);
+      //create a URL from the image to be use as a src for <img />
+      //because base64 are to fucking ugly and big
+      const localImageUrl = window.URL.createObjectURL(uploadedImage);
+      dispatch(uploadImageAction(localImageUrl));
+      setImageName(uploadedImage.name);
 
-    //create a new Uploaded Item object
+      //create a new Uploaded Item object
 
-    const newUploadedItem: UploadedItem = {
-      name: uploadedImage.name,
-      id: uuid(),
-      date: new Date(),
-      base64,
-    };
-    //add the new target image to local storage and make sure there
-    //is no duplicates
-    targetImages.push(newUploadedItem);
-    const newTargetImages = [...new Set(targetImages)];
-    localStrge.set("targets", JSON.stringify(newTargetImages));
+      const newUploadedItem: UploadedItem = {
+        name: uploadedImage.name,
+        id: uuid(),
+        date: new Date(),
+        base64,
+      };
+      //add the new target image to local storage and make sure there
+      //is no duplicates
+      targetImages.push(newUploadedItem);
+      const newTargetImages = [...new Set(targetImages)];
+      localStrge.set("targets", JSON.stringify(newTargetImages));
+    } catch (error) {
+      notify("Can't Store it locally for some reason");
+      console.log("This error occured in the Upload comp");
+      console.log(error);
+    }
   };
   return (
     <Box m="1rem 0">

@@ -14,16 +14,19 @@ const UserUploads: FC = () => {
   );
   const [empty, setEmpty] = useState<boolean>(uploads.length === 0);
   const handleRemoveItem = (id: string) => {
-    localStrge.remove("targets", id);
+    const newUploads = uploads.filter((upl: UploadedItem) => upl.id !== id);
+    localStrge.set("targets", JSON.stringify(newUploads));
+    setUploads(newUploads);
+    setEmpty(newUploads.length === 0);
   };
+  const updateUploadsAfterANewUpload = () => {
+    const newUploads = JSON.parse(localStrge.get("targets") || "[]") || [];
 
+    setUploads(newUploads);
+    setEmpty(newUploads.length === 0);
+  };
   useEffect(() => {
-    //rerender after the deletion of one item
-    setUploads([]);
-    const uptadetedUserUploads =
-      JSON.parse(localStrge.get("targets") || "[]") || [];
-    setUploads(uptadetedUserUploads);
-    console.log("Rerendering the comp [UserUploads]");
+    updateUploadsAfterANewUpload();
   }, [uploads.length, TargetImage]);
   return (
     <Box p="1rem 0" maxH="75vh" overflowY="scroll">
