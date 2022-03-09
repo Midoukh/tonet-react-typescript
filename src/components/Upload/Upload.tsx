@@ -9,6 +9,7 @@ import { v4 as uuid } from "uuid";
 import { uploadTargetImage as uploadImageAction } from "../../store/actionCreators";
 import { imageToBase64 } from "../../utils/helpers/imageMan";
 import { toast } from "react-toastify";
+import { expressApi } from "../../lib/axios";
 
 interface Props {
   label?: string;
@@ -18,6 +19,7 @@ type InputEvent = ChangeEvent<HTMLInputElement>;
 const Upload: FC<Props> = ({ label }) => {
   const notify = (message: string) => toast(message);
   const [imageName, setImageName] = useState("");
+  const [compressing, setCompressing] = useState<boolean>(false);
   const dispatch = useDispatch();
   const localStrge = new LocalStrge();
   const targetImages: any = lengthLimiter(
@@ -25,10 +27,34 @@ const Upload: FC<Props> = ({ label }) => {
     5
   );
 
+  const handleCompressImage = async (file: FormData): Promise<any> => {
+    console.log("FormData", FormData);
+
+    return expressApi.post("/images-processing/compression", file, {
+      headers: {
+        "Content-Type": `multipart/form-data`,
+      },
+    });
+  };
+
   const handleOnImageChange = async (e: InputEvent): Promise<void> => {
     try {
       //get the image file from the user
       const uploadedImage = e.target.files![0];
+      console.log(uploadedImage);
+      const formData = new FormData();
+      formData.append("file", uploadedImage);
+
+      //compressing the uploaded image
+      setCompressing(true);
+      const response = await toast.promise(handleCompressImage(formData), {
+        pending: "Compressing your image",
+        success: "Image compressed 👌",
+        error: "Something went wrong, please try again 🤯",
+      });
+      console.log(response);
+
+      setCompressing(false);
 
       //convert it to a base64 so we can store it locally
       const base64 = (await imageToBase64(uploadedImage)) || "";
@@ -92,6 +118,7 @@ const Upload: FC<Props> = ({ label }) => {
       </label>
       <Input
         type="file"
+        name="file"
         accept="image/*"
         onChange={handleOnImageChange}
         visibility="hidden"
