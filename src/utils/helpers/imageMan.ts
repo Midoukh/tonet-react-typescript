@@ -2,10 +2,9 @@ export const imageToBase64 = (file: File): Promise<any> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onloadend = () => resolve(reader.result);
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file)
   });
 };
-
 export const base64ToURL = async (base64: string): Promise<string> => {
   if (!base64) return "";
   const response = await fetch(base64);

@@ -19,7 +19,6 @@ type InputEvent = ChangeEvent<HTMLInputElement>;
 const Upload: FC<Props> = ({ label }) => {
   const notify = (message: string) => toast(message);
   const [imageName, setImageName] = useState("");
-  const [compressing, setCompressing] = useState<boolean>(false);
   const dispatch = useDispatch();
   const localStrge = new LocalStrge();
   const targetImages: any = lengthLimiter(
@@ -41,23 +40,19 @@ const Upload: FC<Props> = ({ label }) => {
     try {
       //get the image file from the user
       const uploadedImage = e.target.files![0];
-      console.log(uploadedImage);
       const formData = new FormData();
       formData.append("file", uploadedImage);
 
       //compressing the uploaded image
-      setCompressing(true);
       const response = await toast.promise(handleCompressImage(formData), {
         pending: "Compressing your image",
         success: "Image compressed 👌",
         error: "Something went wrong, please try again 🤯",
       });
-      console.log(response);
 
-      setCompressing(false);
-
-      //convert it to a base64 so we can store it locally
-      const base64 = (await imageToBase64(uploadedImage)) || "";
+      //get the base64 from the server so we can store it locally
+      const { base64 } = response.data.compressedImage;
+      // const base64 = (await imageToBase64(output)) || "";
 
       //create a URL from the image to be use as a src for <img />
       //because base64 are to fucking ugly and big
