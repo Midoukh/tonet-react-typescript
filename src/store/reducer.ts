@@ -1,9 +1,13 @@
 import * as actionTypes from "./actionTypes";
 import { base64ToURL } from "../utils/helpers/imageMan";
 import { LocalStrge } from "../utils/helpers/localStrge";
-
+import { handleGetUserIPAdress } from "../utils/helpers/ipAdress";
 const localStrge = new LocalStrge();
 const TargetImages = JSON.parse(localStrge.get("targets") || "[]") || [];
+
+const {
+  data: { ip },
+} = await handleGetUserIPAdress();
 
 const isFetched: boolean = false;
 const SingleImageCategoriesListOfImages: Image[] = [];
@@ -25,6 +29,7 @@ const initialState: StoreState = {
   reportBugVis,
   fetchCategory,
   reviewVis,
+  ipAdress: ip || "",
 };
 
 const reducer = (state: any = initialState, action: any) => {

@@ -23,6 +23,7 @@ interface StoreState {
   reportBugVis: boolean;
   reviewVis: boolean;
   fetchCategory: FetchCategory;
+  ipAdress: string;
 }
 
 interface ActionType {

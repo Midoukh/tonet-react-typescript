@@ -16,15 +16,18 @@ interface Props {
 }
 const CollectReviews: FC<Props> = ({ isOpen }) => {
   const dispatch = useDispatch();
+  const [activeReaction, setActiveReaction] = useState("");
+
   const handleCloseModal = () => {
     dispatch(toggleReviewVis(false));
   };
-  const [activeReaction, setActiveReaction] = useState("");
   return (
     <Modal isOpen={isOpen} onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent p="2rem" minW="50vw" minH="15vh">
-        <Heading as="h2">How was your experience?</Heading>
+        <Heading as="h2" mb="2rem">
+          How was your experience?
+        </Heading>
         <Flex w="100%" h="100%" justify="center" align="center">
           <Flex>
             {REACTIONS.map((reaction: string) => (
@@ -36,7 +39,7 @@ const CollectReviews: FC<Props> = ({ isOpen }) => {
             ))}
           </Flex>
         </Flex>
-        <Flex align="center" mt="1rem">
+        <Flex align="center" mt="4rem">
           <Button colorScheme="blue" mr=".5rem">
             Submit
           </Button>
