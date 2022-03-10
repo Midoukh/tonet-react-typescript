@@ -19,9 +19,15 @@ export const uploadTargetImage = (Image: string): object => {
   };
 };
 
-export const toggleReportBugVis = (show: boolean): object => {
+export const toggleReportBugVis = (show: boolean): Payload => {
   return {
     type: actionTypes.TOGGLE_REPORTBUG_VISIBILITY,
+    payload: show,
+  };
+};
+export const toggleReviewVis = (show: boolean): Payload => {
+  return {
+    type: actionTypes.TOGGLE_REVIEW_VISIBILITY,
     payload: show,
   };
 };

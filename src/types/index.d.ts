@@ -21,6 +21,7 @@ interface FetchCategory {
 interface StoreState {
   TargetImage: string;
   reportBugVis: boolean;
+  reviewVis: boolean;
   fetchCategory: FetchCategory;
 }
 
@@ -42,4 +43,9 @@ interface Favorite {
   src: string;
   endpoint: string;
   skeletonColor: string;
+}
+
+interface Payload {
+  type: string;
+  payload: any;
 }

@@ -19,10 +19,12 @@ const fetchCategory = {
   isFetched,
   SingleImageCategoriesListOfImages,
 };
+const reviewVis: boolean = false;
 const initialState: StoreState = {
   TargetImage: TargetImageURl,
   reportBugVis,
   fetchCategory,
+  reviewVis,
 };
 
 const reducer = (state: any = initialState, action: any) => {
@@ -46,6 +48,11 @@ const reducer = (state: any = initialState, action: any) => {
       return {
         ...state,
         reportBugVis: action.payload,
+      };
+    case actionTypes.TOGGLE_REVIEW_VISIBILITY:
+      return {
+        ...state,
+        reviewVis: action.payload,
       };
     default:
       return state;
