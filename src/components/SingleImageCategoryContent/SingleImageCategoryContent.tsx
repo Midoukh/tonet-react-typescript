@@ -2,15 +2,16 @@ import React, { FC, useEffect, useState } from "react";
 import { Grid, GridItem } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
-import ReactImage from "../Image/Image";
+import SourceImage from "./SourceImage/SourceImage";
 import "./style.css";
-import { MdGridGoldenratio } from "react-icons/md";
+
 const Content: FC = ({}) => {
   const gState = useSelector((state: StoreState) => state);
   const [Images] = useState(
     gState.fetchCategory.SingleImageCategoriesListOfImages || []
   );
 
+  useEffect(() => {}, []);
   return (
     <Grid
       templateColumns="repeat(3, auto)"
@@ -23,11 +24,12 @@ const Content: FC = ({}) => {
       ) : (
         Images.map((image) => (
           <GridItem key={uuid()} cursor="pointer">
-            <ReactImage
+            <SourceImage
               srcImg={image.src ? image.src.medium : image.url}
-              height="xl"
               width="auto"
               show="visible"
+              placeholderColor={image.avg_color}
+              id={image.id}
             />
           </GridItem>
         ))

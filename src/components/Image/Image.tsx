@@ -1,6 +1,12 @@
-import React, { FC, CSSProperties, useEffect } from "react";
-import { Image } from "@chakra-ui/react";
+import React, {
+  FC,
+  CSSProperties,
+  useEffect,
+  ReactComponentElement,
+} from "react";
+import { Image, Box } from "@chakra-ui/react";
 import "./Image.style.css";
+import { WaterFilling } from "../CSSSpinnters";
 
 type imgHeights = "md" | "xd" | "xl" | "100%" | "auto";
 
@@ -13,6 +19,10 @@ interface ImageProps {
   show?: string;
   radius?: string;
   onLoad?(e: object): any;
+  placeholderColor?: string;
+  customBorder?: boolean;
+  selected?: boolean;
+  onClick?(e: object): any;
 }
 
 const MyImageComponent: FC<ImageProps> = ({
@@ -20,10 +30,12 @@ const MyImageComponent: FC<ImageProps> = ({
   height,
   animated,
   width,
-  show = "visible",
-  onLoad,
   radius = "unset",
   maxH = "unset",
+  placeholderColor = "#ccc",
+  customBorder,
+  selected,
+  onClick,
 }) => {
   const h =
     height === "md"
@@ -37,26 +49,31 @@ const MyImageComponent: FC<ImageProps> = ({
       : height === "auto"
       ? "auto"
       : "30px";
-  const w = width === "fit" ? "100%" : width === "auto" ? "auto" : "initial";
+  const w = width === "fit" ? "100%" : width === "auto" ? "auto" : "auto";
 
-  //this style object need to type check with CSSProperties
-  const additionalStyles: CSSProperties = {
-    visibility: show === "visible" ? "visible" : "hidden",
-  };
+  // let placeHolderHeight = h.replace("px", "");
+  const color = placeholderColor.replace("#", "");
+
+  const selectedSourceImageStyle = selected
+    ? "2px solid #28D1EB"
+    : "2px solid transparent";
+
   return (
-    <Image
-      className={animated ? "bipit" : ""}
-      src={srcImg}
-      h={h}
-      w={w}
-      maxH={maxH}
-      visibility={additionalStyles.visibility}
-      position={
-        additionalStyles.visibility === "visible" ? "initial" : "absolute"
-      }
-      onLoad={onLoad}
-      borderRadius={radius}
-    />
+    <Box pos="relative">
+      <Image
+        className={animated ? "bipit" : ""}
+        src={srcImg}
+        h={h}
+        w={w}
+        maxH={maxH}
+        borderRadius={radius}
+        fallbackSrc={`http://via.placeholder.com/180/${color}/${color}`}
+        border={customBorder ? selectedSourceImageStyle : "unset"}
+        onClick={onClick && onClick}
+        filter={selected ? "grayscale(80%)" : "unset"}
+      />
+      {selected && <WaterFilling />}
+    </Box>
   );
 };
 

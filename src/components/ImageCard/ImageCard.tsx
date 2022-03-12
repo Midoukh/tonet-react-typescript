@@ -11,11 +11,16 @@ import { FilteringArrOfObjs } from "../../utils/helpers/arrays";
 interface props {
   src: string;
   label: string;
-  skeletonColor: string;
+  placeholderColor?: string;
   endpoint: string;
 }
 
-const ImageCard: FC<props> = ({ src, label, skeletonColor, endpoint }) => {
+const ImageCard: FC<props> = ({
+  src,
+  label,
+  placeholderColor = "#ccc",
+  endpoint,
+}) => {
   const [ImageLoaded, setImageLoaded] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const componentMounted = useRef(true);
@@ -23,19 +28,16 @@ const ImageCard: FC<props> = ({ src, label, skeletonColor, endpoint }) => {
   const dispatch = useDispatch();
   const globalState = useSelector((state) => state);
 
-  const hanldeLoadingImage = (e: object) => {
-    setImageLoaded((prev) => true);
-  };
   const handleFetchCategoryContent = async () => {
     setIsFetching(true);
     try {
       const response = await pixelsApi.get(
         `${endpoint}?type=Photo&per_page=60&width=3607`
       );
-
+      console.log(response.data);
       const filteredArrayOfObj: Image[] = FilteringArrOfObjs(
         response.data.media,
-        ["url", "src", "id", "height", "width", "type"]
+        ["url", "src", "id", "height", "width", "type", "avg_color"]
       );
       const newFetchCategoryState: FetchCategory = {
         isFetched: true,
@@ -59,12 +61,8 @@ const ImageCard: FC<props> = ({ src, label, skeletonColor, endpoint }) => {
       <ReactImage
         height="xl"
         srcImg={src}
-        show={ImageLoaded ? "visible" : "hidden"}
-        onLoad={hanldeLoadingImage}
+        placeholderColor={placeholderColor}
       />
-      {!ImageLoaded && (
-        <Skeleton height={180} startColor="#ccc" endColor={skeletonColor} />
-      )}
       {isFetching ? (
         <div
           style={{
@@ -73,7 +71,7 @@ const ImageCard: FC<props> = ({ src, label, skeletonColor, endpoint }) => {
             left: "26%",
           }}
         >
-          <GridLoader size={15} margin={1} color={skeletonColor} />
+          <GridLoader size={15} margin={1} color={placeholderColor} />
         </div>
       ) : (
         <Text

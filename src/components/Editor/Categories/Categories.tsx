@@ -18,7 +18,7 @@ const Categories: FC = () => {
           <ImageCard
             src={cat.src}
             label={cat.label}
-            skeletonColor={cat.skeletonColor}
+            placeholderColor={cat.skeletonColor}
             endpoint={cat.endpoint}
           />
         </GridItem>

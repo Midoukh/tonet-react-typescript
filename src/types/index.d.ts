@@ -11,6 +11,7 @@ interface Image {
   width: number;
   id: number;
   type: string;
+  avg_color: string;
 }
 interface FetchCategory {
   isFetched: boolean;
