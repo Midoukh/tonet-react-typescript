@@ -21,6 +21,7 @@ interface FetchCategory {
 
 interface StoreState {
   TargetImage: string;
+  SourceImage: string;
   reportBugVis: boolean;
   reviewVis: boolean;
   fetchCategory: FetchCategory;

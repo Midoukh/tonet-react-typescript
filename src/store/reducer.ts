@@ -24,8 +24,10 @@ const fetchCategory = {
   SingleImageCategoriesListOfImages,
 };
 const reviewVis: boolean = false;
+
 const initialState: StoreState = {
   TargetImage: TargetImageURl,
+  SourceImage: "",
   reportBugVis,
   fetchCategory,
   reviewVis,

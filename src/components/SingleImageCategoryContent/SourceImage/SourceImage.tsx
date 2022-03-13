@@ -1,6 +1,9 @@
 import React, { FC, useState } from "react";
-import ReactImage from "../../Image/Image";
+import { useDispatch } from "react-redux";
 
+import ReactImage from "../../Image/Image";
+import { setSourceImage } from "../../../store/actionCreators";
+import { expressApi } from "../../../lib/axios";
 interface Props {
   srcImg: string;
   width: string;
@@ -16,10 +19,19 @@ const SourceImage: FC<Props> = ({
   show,
   placeholderColor,
 }) => {
+  const dispatch = useDispatch();
   const [selectedSourceImageId, setSelectedSourceImageId] = useState<number>(0);
 
   const handleSelectSourceImage = (id: number): void => {
     setSelectedSourceImageId(id);
+    dispatch(setSourceImage(srcImg));
+  };
+
+  const handleSendSourceAndTargetImage = async () => {
+    try {
+      const formData = new FormData();
+      await expressApi.post("");
+    } catch (error) {}
   };
 
   return (

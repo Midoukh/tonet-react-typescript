@@ -12,10 +12,16 @@ export const fetchImageCategory = (fetchCategory: FetchCategory): object => {
   };
 };
 
-export const uploadTargetImage = (Image: string): object => {
+export const uploadTargetImage = (Image: string): Payload => {
   return {
     type: actionTypes.UPLOAD_TARGET_IMAGE,
     payload: Image,
+  };
+};
+export const setSourceImage = (source: string | Buffer): Payload => {
+  return {
+    type: actionTypes.SET_SOURCE_IMAGE,
+    payload: source,
   };
 };
 
