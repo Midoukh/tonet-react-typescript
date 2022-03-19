@@ -1,0 +1,4 @@
+- figure out the format(s) of the source and target image to be send to the server @done
+- figure if convering to a buffer from a base 65
+- send the target and source image to the server
+- extract the metadata of the target and source image using sharp in the server.

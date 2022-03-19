@@ -1,15 +1,16 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import ReactImage from "../../Image/Image";
-import { setSourceImage } from "../../../store/actionCreators";
-import { expressApi } from "../../../lib/axios";
 interface Props {
   srcImg: string;
   width: string;
   show: string;
   placeholderColor: string;
   id: number;
+  selectedSourceImageId: number;
+  handleSelectSourceImage(): void;
+  loading: boolean;
 }
 
 const SourceImage: FC<Props> = ({
@@ -18,22 +19,11 @@ const SourceImage: FC<Props> = ({
   id,
   show,
   placeholderColor,
+  handleSelectSourceImage,
+  selectedSourceImageId,
+  loading,
 }) => {
-  const dispatch = useDispatch();
-  const [selectedSourceImageId, setSelectedSourceImageId] = useState<number>(0);
-
-  const handleSelectSourceImage = (id: number): void => {
-    setSelectedSourceImageId(id);
-    dispatch(setSourceImage(srcImg));
-  };
-
-  const handleSendSourceAndTargetImage = async () => {
-    try {
-      const formData = new FormData();
-      await expressApi.post("");
-    } catch (error) {}
-  };
-
+  useEffect(() => {}, [selectedSourceImageId]);
   return (
     <ReactImage
       srcImg={srcImg}
@@ -42,8 +32,9 @@ const SourceImage: FC<Props> = ({
       show={show}
       placeholderColor={placeholderColor}
       customBorder
-      onClick={() => handleSelectSourceImage(id)}
+      onClick={handleSelectSourceImage}
       selected={selectedSourceImageId === id}
+      loading={loading}
       radius="10px"
     />
   );

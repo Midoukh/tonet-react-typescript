@@ -1,8 +1,8 @@
-import React, { FC, useState, useRef, useEffect } from "react";
+import React, { FC, useState } from "react";
 import ReactImage from "../Image/Image";
-import { Box, Text, Skeleton, CircularProgress } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import GridLoader from "react-spinners/GridLoader";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { fetchImageCategory } from "../../store/actionCreators";
 import { pixelsApi } from "../../lib/axios";
@@ -21,12 +21,8 @@ const ImageCard: FC<props> = ({
   placeholderColor = "#ccc",
   endpoint,
 }) => {
-  const [ImageLoaded, setImageLoaded] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const componentMounted = useRef(true);
-
   const dispatch = useDispatch();
-  const globalState = useSelector((state) => state);
 
   const handleFetchCategoryContent = async () => {
     setIsFetching(true);

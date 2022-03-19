@@ -67,6 +67,7 @@ const Upload: FC<Props> = ({ label }) => {
         id: uuid(),
         date: new Date(),
         base64,
+        active: true,
       };
       //add the new target image to local storage and make sure there
       //is no duplicates

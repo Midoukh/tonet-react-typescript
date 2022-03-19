@@ -11,6 +11,8 @@ import {
 import Emoji from "./Emoji/Emoji";
 import { REACTIONS } from "../../utils/constants";
 import { toggleReviewVis } from "../../store/actionCreators";
+import { v4 as uuid } from "uuid";
+
 interface Props {
   isOpen: boolean;
 }
@@ -32,6 +34,7 @@ const CollectReviews: FC<Props> = ({ isOpen }) => {
           <Flex>
             {REACTIONS.map((reaction: string) => (
               <Emoji
+                key={uuid()}
                 reaction={reaction}
                 isSelected={activeReaction === reaction}
                 setActiveReaction={setActiveReaction}

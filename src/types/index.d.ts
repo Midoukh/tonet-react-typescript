@@ -21,13 +21,16 @@ interface FetchCategory {
 
 interface StoreState {
   TargetImage: string;
-  SourceImage: string;
+  SourceImage: SourceImage;
   reportBugVis: boolean;
   reviewVis: boolean;
   fetchCategory: FetchCategory;
   ipAdress: string;
 }
-
+interface SourceImage {
+  src: string;
+  isUrl: boolean;
+}
 interface ActionType {
   type: string;
   payload: any;
@@ -38,6 +41,7 @@ interface UploadedItem {
   date: Date;
   id: string;
   name: string;
+  active?: boolean;
 }
 
 interface Favorite {

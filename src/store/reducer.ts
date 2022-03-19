@@ -24,10 +24,13 @@ const fetchCategory = {
   SingleImageCategoriesListOfImages,
 };
 const reviewVis: boolean = false;
-
+const sourceImg: SourceImage = {
+  isUrl: false,
+  src: "",
+};
 const initialState: StoreState = {
   TargetImage: TargetImageURl,
-  SourceImage: "",
+  SourceImage: sourceImg,
   reportBugVis,
   fetchCategory,
   reviewVis,
@@ -50,6 +53,12 @@ const reducer = (state: any = initialState, action: any) => {
       return {
         ...state,
         TargetImage: action.payload,
+      };
+    case actionTypes.SET_SOURCE_IMAGE:
+      console.log(action.payload);
+      return {
+        ...state,
+        SourceImage: action.payload,
       };
     case actionTypes.TOGGLE_REPORTBUG_VISIBILITY:
       return {

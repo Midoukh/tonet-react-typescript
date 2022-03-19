@@ -18,7 +18,8 @@ export const uploadTargetImage = (Image: string): Payload => {
     payload: Image,
   };
 };
-export const setSourceImage = (source: string | Buffer): Payload => {
+export const setSourceImage = (source: SourceImage): Payload => {
+  console.log(source);
   return {
     type: actionTypes.SET_SOURCE_IMAGE,
     payload: source,
