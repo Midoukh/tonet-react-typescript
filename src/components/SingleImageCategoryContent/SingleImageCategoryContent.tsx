@@ -31,11 +31,10 @@ const Content: FC = ({}) => {
     console.log(response);
   };
   const handleSendSourceAndTargetImage = async (): Promise<unknown> => {
-    const { SourceImage, TargetImage } = gState;
-    console.log(getTheTargetImage());
+    const { SourceImage } = gState;
+    const TargetImage = getTheTargetImage().base64;
     if (!SourceImage || !TargetImage) {
       throw Error("You didn' provided a source or a target image");
-      return;
     }
     try {
       const data = {
@@ -53,7 +52,7 @@ const Content: FC = ({}) => {
     if (!targets.length) {
       throw Error("no target image available");
     }
-    return targets.filter((upImg: UploadedItem) => upImg.active);
+    return targets.filter((upImg: UploadedItem) => upImg.active)[0];
   };
   useEffect(() => {}, []);
   return (

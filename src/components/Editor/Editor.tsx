@@ -82,6 +82,10 @@ const Editor = ({}) => {
       }
     }
   };
+  const checkIfCategoryIsInFavorites = (): void => {
+    //1) get the current displayed category
+    //2) check if it exist in favorites
+  };
   return (
     <Box h="100vh">
       <Tabs

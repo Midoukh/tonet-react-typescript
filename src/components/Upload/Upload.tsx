@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FC, useState } from "react";
-import { Box, Heading, Flex, Text, Input } from "@chakra-ui/react";
+import { Box, Heading, Flex, Text, Input, Button } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { BsImageAlt } from "react-icons/bs";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -7,7 +7,10 @@ import { LocalStrge } from "../../utils/helpers/localStrge";
 import { lengthLimiter } from "../../utils/helpers/arrays";
 import { v4 as uuid } from "uuid";
 import { uploadTargetImage as uploadImageAction } from "../../store/actionCreators";
-import { imageToBase64 } from "../../utils/helpers/imageMan";
+import {
+  imageToBase64,
+  checkIfImageUrlIsValid,
+} from "../../utils/helpers/imageMan";
 import { toast } from "react-toastify";
 import { expressApi } from "../../lib/axios";
 
@@ -18,7 +21,10 @@ type InputEvent = ChangeEvent<HTMLInputElement>;
 
 const Upload: FC<Props> = ({ label }) => {
   const notify = (message: string) => toast(message);
+  const notifyError = (message: string) => toast.error(message);
+
   const [imageName, setImageName] = useState("");
+  const [imageURL, setImageURL] = useState("");
   const dispatch = useDispatch();
   const localStrge = new LocalStrge();
   const targetImages: any = lengthLimiter(
@@ -80,6 +86,19 @@ const Upload: FC<Props> = ({ label }) => {
       console.log(error);
     }
   };
+  const handleUploadImageByUrl = async () => {
+    if (imageURL.length) {
+      const isValid = checkIfImageUrlIsValid(imageURL);
+      if (!isValid) {
+        notifyError("Make sure your URL is valid!");
+        return;
+      }
+      const response = await expressApi.post(
+        "/images-processing/upload-by-url",
+        { imageURL }
+      );
+    }
+  };
   return (
     <Box m="1rem 0">
       <Heading as="h3" color="white">
@@ -122,6 +141,32 @@ const Upload: FC<Props> = ({ label }) => {
         id="upload-input"
         width="unset"
       />
+      <label>
+        <Flex
+          direction="column"
+          justify="space-between"
+          align="flex-start"
+          h="20vh"
+        >
+          <Text>URL</Text>
+          <Input
+            type="url"
+            value={imageURL}
+            onChange={(e: InputEvent) => setImageURL(e.target.value)}
+            placeholder="Type your image url here"
+          />
+          <Button
+            colorScheme="blue"
+            variant="outline"
+            w="100%"
+            onClick={handleUploadImageByUrl}
+          >
+            Upload
+          </Button>
+        </Flex>
+      </label>
+      <br />
+      <br />
     </Box>
   );
 };

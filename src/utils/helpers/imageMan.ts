@@ -2,7 +2,7 @@ export const imageToBase64 = (file: File): Promise<any> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onloadend = () => resolve(reader.result);
-    reader.readAsDataURL(file)
+    reader.readAsDataURL(file);
   });
 };
 export const base64ToURL = async (base64: string): Promise<string> => {
@@ -14,3 +14,6 @@ export const base64ToURL = async (base64: string): Promise<string> => {
   console.log("Image Url", imageUrl);
   return new Promise((resolve) => resolve(imageUrl));
 };
+
+export const checkIfImageUrlIsValid = (url: string): boolean =>
+  url.match(/\.(jpeg|jpg|gif|png)$/) != null;
