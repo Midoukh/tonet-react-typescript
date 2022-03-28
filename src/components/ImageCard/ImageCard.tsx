@@ -1,8 +1,9 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, MouseEvent } from "react";
 import ReactImage from "../Image/Image";
 import { Box, Text } from "@chakra-ui/react";
 import GridLoader from "react-spinners/GridLoader";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
 import { fetchImageCategory } from "../../store/actionCreators";
 import { pixelsApi } from "../../lib/axios";
@@ -13,6 +14,9 @@ interface props {
   label: string;
   placeholderColor?: string;
   endpoint: string;
+  isFav?: boolean;
+  removeFromFavs?(): void;
+  checkIfFav?(label: string): void;
 }
 
 const ImageCard: FC<props> = ({
@@ -20,11 +24,16 @@ const ImageCard: FC<props> = ({
   label,
   placeholderColor = "#ccc",
   endpoint,
+  isFav,
+  removeFromFavs,
+  checkIfFav,
 }) => {
   const [isFetching, setIsFetching] = useState(false);
   const dispatch = useDispatch();
+  const gState = useSelector((state: StoreState) => state);
 
-  const handleFetchCategoryContent = async () => {
+  const handleFetchCategoryContent = async (e: any) => {
+    if (e.target.tagName === "svg") return;
     setIsFetching(true);
     try {
       const response = await pixelsApi.get(
@@ -42,6 +51,7 @@ const ImageCard: FC<props> = ({
       };
       dispatch(fetchImageCategory(newFetchCategoryState));
       setIsFetching(false);
+      if (checkIfFav) checkIfFav(label);
     } catch (error) {
       console.log(error);
       setIsFetching(false);
@@ -82,6 +92,20 @@ const ImageCard: FC<props> = ({
         >
           {label}
         </Text>
+      )}
+      {isFav && (
+        <AiOutlineCloseCircle
+          onClick={removeFromFavs}
+          size={35}
+          color="#fff"
+          style={{
+            position: "absolute",
+            top: ".5rem",
+            right: ".5rem",
+            opacity: ".8",
+            cursor: "pointer",
+          }}
+        />
       )}
     </Box>
   );

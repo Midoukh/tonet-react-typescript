@@ -5,7 +5,11 @@ import { v4 as uuid } from "uuid";
 import { IMAGES_CATEGORIES } from "../../../utils/constants";
 import ImageCard from "../../ImageCard/ImageCard";
 
-const Categories: FC = () => {
+interface Props {
+  checkIfFav(label: string): void;
+}
+
+const Categories: FC<Props> = ({ checkIfFav }) => {
   return (
     <Grid
       templateColumns="repeat(3, auto)"
@@ -20,6 +24,7 @@ const Categories: FC = () => {
             label={cat.label}
             placeholderColor={cat.skeletonColor}
             endpoint={cat.endpoint}
+            checkIfFav={checkIfFav}
           />
         </GridItem>
       ))}

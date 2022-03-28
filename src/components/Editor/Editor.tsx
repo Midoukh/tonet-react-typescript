@@ -31,6 +31,9 @@ const Editor = ({}) => {
   const gState: StoreState = useSelector((state: StoreState) => state);
   const [checked, setChecked] = useState(false);
 
+  const [favs, setFavs] = useState(
+    JSON.parse(localStrge.get("favs-sources") || "[]") || []
+  );
   const handleGoBack = () => {
     const newFetchCategoryState: FetchCategory = {
       isFetched: false,
@@ -38,6 +41,7 @@ const Editor = ({}) => {
       SingleImageCategoriesListOfImages: [],
     };
     dispatch(fetchImageCategory(newFetchCategoryState));
+    setChecked(false);
   };
   const handleFavsList = (e: ChangeEvent<HTMLInputElement>) => {
     setChecked(e.target.checked);
@@ -82,10 +86,24 @@ const Editor = ({}) => {
       }
     }
   };
-  const checkIfCategoryIsInFavorites = (): void => {
+  const checkIfCategoryIsInFavorites = (label: string): void => {
+    console.log("checking favs");
     //1) get the current displayed category
+
+    let isFav = false;
     //2) check if it exist in favorites
+    favs.forEach((fav: Favorite) => {
+      console.log(fav);
+      if (label === fav.label) {
+        setChecked(true);
+        isFav = true;
+      }
+    });
+    console.log(label, isFav);
   };
+  // useEffect(() => {
+  //   checkIfCategoryIsInFavorites();
+  // }, [gState.fetchCategory.isFetched]);
   return (
     <Box h="100vh">
       <Tabs
@@ -134,7 +152,7 @@ const Editor = ({}) => {
             {gState.fetchCategory.isFetched ? (
               <SingleImageContent />
             ) : (
-              <Categories />
+              <Categories checkIfFav={checkIfCategoryIsInFavorites} />
             )}
           </TabPanel>
           <TabPanel>
@@ -144,7 +162,11 @@ const Editor = ({}) => {
             <UserUploads />
           </TabPanel>
           <TabPanel>
-            <Favorites />
+            {gState.fetchCategory.isFetched ? (
+              <SingleImageContent />
+            ) : (
+              <Favorites />
+            )}
           </TabPanel>
         </TabPanels>
       </Tabs>

@@ -13,7 +13,16 @@ const Favs: FC = ({}) => {
     JSON.parse(localStrge.get("favs-sources") || "[]") || []
   );
   const [empty, setEmpty] = useState<boolean>(favs.length === 0);
+  const handleRemoveCategoryFromFavs = (id: string): void => {
+    console.log(favs);
+    console.log(id);
+    const updatedFavs = [...favs].filter((fav: Favorite) => fav.id !== id);
+    localStrge.set("favs-sources", JSON.stringify(updatedFavs));
 
+    //update UI
+    setFavs(updatedFavs);
+    setEmpty(updatedFavs.length === 0);
+  };
   return (
     <Box
       p="1rem 0"
@@ -31,7 +40,11 @@ const Favs: FC = ({}) => {
         <Grid gridTemplateColumns="repeat(3, 1fr)" maxH="75vh" gap={2}>
           {favs.map((fav: Favorite) => (
             <GridItem key={uuid()}>
-              <ImageCard {...fav} />
+              <ImageCard
+                {...fav}
+                isFav
+                removeFromFavs={() => handleRemoveCategoryFromFavs(fav.id)}
+              />
             </GridItem>
           ))}
         </Grid>

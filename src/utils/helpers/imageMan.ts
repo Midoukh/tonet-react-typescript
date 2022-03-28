@@ -14,6 +14,7 @@ export const base64ToURL = async (base64: string): Promise<string> => {
   console.log("Image Url", imageUrl);
   return new Promise((resolve) => resolve(imageUrl));
 };
-
-export const checkIfImageUrlIsValid = (url: string): boolean =>
-  url.match(/\.(jpeg|jpg|gif|png)$/) != null;
+//https://images.pexels.com/photos/10194726/pexels-photo-10194726.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500
+export const checkIfImageUrlIsValid = (url: string): boolean => {
+  return url.match(/(jpg|jpeg|gif|png)((\?.*)$|$)/gm) !== null;
+};
