@@ -12,7 +12,9 @@ const {
 const isFetched: boolean = false;
 const SingleImageCategoriesListOfImages: Image[] = [];
 const TargetImageBase64 =
-  TargetImages.length > 0 ? TargetImages[TargetImages.length - 1] : {};
+  TargetImages.length > 0
+    ? TargetImages.filter((item: UploadedItem) => item.active)[0]
+    : {};
 const TargetImageURl = await base64ToURL(
   TargetImageBase64 !== {} ? TargetImageBase64.base64 : ""
 );

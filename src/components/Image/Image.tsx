@@ -8,7 +8,7 @@ import { Image, Box } from "@chakra-ui/react";
 import "./Image.style.css";
 import { WaterFilling } from "../CSSSpinnters";
 
-type imgHeights = "md" | "xd" | "xl" | "100%" | "auto";
+type imgHeights = "md" | "xd" | "xl" | "sm" | "100%" | "auto";
 
 interface ImageProps {
   srcImg: string;
@@ -50,7 +50,9 @@ const MyImageComponent: FC<ImageProps> = ({
       ? "100%"
       : height === "auto"
       ? "auto"
-      : "30px";
+      : height === "sm"
+      ? "30px"
+      : "unset";
   const w = width === "fit" ? "100%" : width === "auto" ? "auto" : "auto";
 
   // let placeHolderHeight = h.replace("px", "");

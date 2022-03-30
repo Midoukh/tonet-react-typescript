@@ -2,11 +2,12 @@ import React, { FC, useState } from "react";
 import { useDispatch } from "react-redux";
 import { bubble as Menu } from "react-burger-menu";
 import { List, ListItem, Button } from "@chakra-ui/react";
-import { AiOutlineBug } from "react-icons/ai";
+import { AiOutlineBug, AiOutlineShareAlt } from "react-icons/ai";
 import { BsEmojiExpressionless } from "react-icons/bs";
 import logo from "../../assets/logo.png";
 import ReactImage from "../Image/Image";
 import Upload from "../Upload/Upload";
+import Footer from "./Footer/Footer";
 import {
   toggleReportBugVis,
   toggleReviewVis,
@@ -48,7 +49,7 @@ const BurgerMenu: FC = ({}) => {
             Report a Bug
           </Button>
         </ListItem>
-        <ListItem w="100%">
+        <ListItem className="menu-item" w="100%" mb="0.5rem">
           <Button
             onClick={handleShowReview}
             color="blue.400"
@@ -65,17 +66,24 @@ const BurgerMenu: FC = ({}) => {
             Feedback
           </Button>
         </ListItem>
+        <ListItem w="100%">
+          <Button
+            color="blue.400"
+            w="100%"
+            display="flex"
+            justifyContent="flex-start"
+          >
+            <AiOutlineShareAlt
+              size={25}
+              style={{
+                marginRight: ".5rem",
+              }}
+            />
+            Share TONET
+          </Button>
+        </ListItem>
       </List>
-
-      <a id="about" className="menu-item" href="/about">
-        About
-      </a>
-      <a id="contact" className="menu-item" href="/contact">
-        Contact
-      </a>
-      <a className="menu-item--small" href="">
-        Settings
-      </a>
+      <Footer />
     </Menu>
   );
 };

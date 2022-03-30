@@ -11,6 +11,7 @@ interface Props {
   id: string;
   active?: boolean;
   handleRemoveItem(id: string): void;
+  setActiveItem(id: string, base64: string): void;
 }
 const Item: FC<Props> = ({
   src,
@@ -19,6 +20,7 @@ const Item: FC<Props> = ({
   id,
   active = false,
   handleRemoveItem,
+  setActiveItem,
 }) => {
   return (
     <Flex
@@ -43,11 +45,17 @@ const Item: FC<Props> = ({
           {date}
         </Text>
         <Text m="0 1rem">{name}</Text>
-        {active && (
-          <Box bg="blue.500" p=".3rem" cursor="pointer" borderRadius="10px">
-            Active
-          </Box>
-        )}
+
+        <Box
+          bg="blue.500"
+          p=".3rem"
+          cursor="pointer"
+          borderRadius="10px"
+          opacity={active ? "1" : "0.4"}
+          onClick={() => setActiveItem(id, src)}
+        >
+          Active
+        </Box>
       </Flex>
       <AiOutlineCloseCircle
         onClick={() => handleRemoveItem(id)}

@@ -2,12 +2,14 @@ import React, { FC, useEffect, useState } from "react";
 import { Box, Flex, Text, List, ListItem, Heading } from "@chakra-ui/react";
 import { v4 as uuid } from "uuid";
 import { LocalStrge } from "../../utils/helpers/localStrge";
+import { base64ToURL } from "../../utils/helpers/imageMan";
 import { FcInfo } from "react-icons/fc";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import UploadedItem from "./UploadedItem/UploadedItem";
-
+import { uploadTargetImage } from "../../store/actionCreators";
 const UserUploads: FC = () => {
   const { TargetImage } = useSelector((state: StoreState) => state);
+  const dispatch = useDispatch();
   const localStrge = new LocalStrge();
   const [uploads, setUploads] = useState(
     JSON.parse(localStrge.get("targets") || "[]") || []
@@ -21,10 +23,27 @@ const UserUploads: FC = () => {
   };
   const updateUploadsAfterANewUpload = () => {
     const newUploads = JSON.parse(localStrge.get("targets") || "[]") || [];
-
+    console.log("new upload");
+    console.table(newUploads);
     setUploads(newUploads);
     setEmpty(newUploads.length === 0);
   };
+
+  const handleSetActiveItem = async (
+    id: string,
+    base64: string
+  ): Promise<any> => {
+    const uploads = JSON.parse(localStrge.get("targets") || "[]") || [];
+    const updatedUploads = uploads.map((item: UploadedItem) => {
+      if (item.id === id) item.active = true;
+      else item.active = false;
+      return item;
+    });
+    localStrge.set("targets", JSON.stringify(updatedUploads));
+    setUploads(updatedUploads);
+    dispatch(uploadTargetImage(await base64ToURL(base64)));
+  };
+
   useEffect(() => {
     updateUploadsAfterANewUpload();
   }, [uploads.length, TargetImage]);
@@ -48,7 +67,7 @@ const UserUploads: FC = () => {
             HISTORY
           </Heading>
           {uploads.map(
-            ({ base64, id, name, date }: UploadedItem, i: number) => (
+            ({ base64, id, name, date, active }: UploadedItem, i: number) => (
               <ListItem key={uuid()}>
                 <UploadedItem
                   handleRemoveItem={handleRemoveItem}
@@ -56,7 +75,8 @@ const UserUploads: FC = () => {
                   id={id}
                   date={date}
                   name={name}
-                  active={i === uploads.length - 1}
+                  active={active}
+                  setActiveItem={handleSetActiveItem}
                 />
               </ListItem>
             )

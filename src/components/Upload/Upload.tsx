@@ -1,4 +1,12 @@
-import React, { ChangeEvent, FC, useState, FormEvent } from "react";
+import React, {
+  ChangeEvent,
+  FC,
+  useState,
+  FormEvent,
+  DragEvent,
+  MouseEventHandler,
+  useRef,
+} from "react";
 import { Box, Heading, Flex, Text, Input, Button } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { BsImageAlt } from "react-icons/bs";
@@ -19,6 +27,8 @@ interface Props {
   label?: string;
 }
 type InputEvent = ChangeEvent<HTMLInputElement>;
+type DropEvent = DragEvent<HTMLDivElement>;
+type mouseEvent = MouseEventHandler<HTMLDivElement>;
 
 const Upload: FC<Props> = ({ label }) => {
   const notify = (message: string) => toast(message);
@@ -28,12 +38,16 @@ const Upload: FC<Props> = ({ label }) => {
   const [imageURL, setImageURL] = useState("");
   const [validUrl, setValidUrl] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [styleOnDragBegin, setStyleOnDragBegin] = useState(false);
+  const [dragStart, setDragStart] = useState(false);
   const dispatch = useDispatch();
   const localStrge = new LocalStrge();
   const targetImages: any = lengthLimiter(
     JSON.parse(localStrge.get("targets") || "[]") || [],
     5
   );
+
+  const dropZoneRef = useRef<HTMLInputElement>(null);
 
   const handleCompressImage = async (file: FormData): Promise<any> => {
     console.log("FormData", FormData);
@@ -44,13 +58,10 @@ const Upload: FC<Props> = ({ label }) => {
       },
     });
   };
-
-  const handleOnImageChange = async (e: InputEvent): Promise<void> => {
+  const handleUploadedOrDroppedFile = async (file: File): Promise<any> => {
     try {
-      //get the image file from the user
-      const uploadedImage = e.target.files![0];
       const formData = new FormData();
-      formData.append("file", uploadedImage);
+      formData.append("file", file);
 
       //compressing the uploaded image
       const response = await toast.promise(handleCompressImage(formData), {
@@ -65,15 +76,20 @@ const Upload: FC<Props> = ({ label }) => {
 
       //create a URL from the image to be use as a src for <img />
       //because base64 are to fucking ugly and big
-      const localImageUrl = window.URL.createObjectURL(uploadedImage);
+      const localImageUrl = window.URL.createObjectURL(file);
+      setImageName(file.name);
+      handleStoreImageInLocalStorage(base64, file.name);
       dispatch(uploadImageAction(localImageUrl));
-      setImageName(uploadedImage.name);
-      handleStoreImageInLocalStorage(base64, uploadedImage.name);
     } catch (error) {
       notify("Can't Store it locally for some reason");
       console.log("This error occured in the Upload comp");
       console.log(error);
     }
+  };
+  const handleOnImageChange = async (e: InputEvent): Promise<void> => {
+    //get the image file from the user
+    const uploadedImage = e.target.files![0];
+    await handleUploadedOrDroppedFile(uploadedImage);
   };
   const handleUploadImageByUrl = async (e: FormEvent) => {
     e.preventDefault();
@@ -125,6 +141,16 @@ const Upload: FC<Props> = ({ label }) => {
   ): void => {
     //image is base64
     //create a new Uploaded Item object
+    let updatedTargetImages: UploadedItem[] = [];
+    if (targetImages.length > 1) {
+      //set all the old items active prop to false
+      console.log("The target images lenght is", targetImages.length);
+      updatedTargetImages = targetImages.map((item: UploadedItem) => {
+        item.active = false;
+        return item;
+      });
+    }
+
     const newUploadedItem: UploadedItem = {
       name,
       id: uuid(),
@@ -134,9 +160,37 @@ const Upload: FC<Props> = ({ label }) => {
     };
     //add the new target image to local storage and make sure there
     //is no duplicates
-    targetImages.push(newUploadedItem);
-    const newTargetImages = [...new Set(targetImages)];
+    updatedTargetImages.push(newUploadedItem);
+    const newTargetImages = [...new Set(updatedTargetImages)];
     localStrge.set("targets", JSON.stringify(newTargetImages));
+  };
+
+  const handleDropFile = async (ev: DropEvent): Promise<any> => {
+    ev.preventDefault();
+    dropZoneRef!.current!.style.borderColor = "#3498db";
+
+    if (ev.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      for (let i = 0; i < ev.dataTransfer.items.length; i++) {
+        // If dropped items aren't files, reject them
+        if (ev.dataTransfer.items[i].kind === "file") {
+          const file: any = ev.dataTransfer.items[i].getAsFile();
+          await handleUploadedOrDroppedFile(file);
+          dropZoneRef!.current!.style.borderColor = "rgba(255,255,255,.8)";
+        }
+      }
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      for (let i = 0; i < ev.dataTransfer.files.length; i++) {
+        const file: any = ev.dataTransfer.files[i];
+        await handleUploadedOrDroppedFile(file);
+        dropZoneRef!.current!.style.borderColor = "rgba(255,255,255,.8)";
+      }
+    }
+  };
+  const handleDragOver = (e: DropEvent): void => {
+    setStyleOnDragBegin(true);
+    e.preventDefault();
   };
   return (
     <Box m="1rem 0">
@@ -157,7 +211,14 @@ const Upload: FC<Props> = ({ label }) => {
         </Text>
       )}
       <label htmlFor="upload-input">
-        <Box border="1px dashed rgba(255,255,255,.8)" m="1rem 0" p=".8rem">
+        <Box
+          ref={dropZoneRef}
+          onDrop={handleDropFile}
+          onDragOver={handleDragOver}
+          border="1px dashed rgba(255,255,255,.8)"
+          m="1rem 0"
+          p="1.8rem"
+        >
           <Flex
             direction="column"
             align="center"
@@ -178,7 +239,7 @@ const Upload: FC<Props> = ({ label }) => {
         visibility="hidden"
         position="absolute"
         id="upload-input"
-        width="unset"
+        maxW="100%"
       />
       <form onSubmit={handleUploadImageByUrl}>
         <label>
