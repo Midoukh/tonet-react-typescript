@@ -40,7 +40,6 @@ const CollectReviews: FC<Props> = ({ isOpen }) => {
     setLoading(true);
     try {
       const response = await expressApi.post("/feedback/create-reviews", data);
-      console.log(response);
       const { message } = response.data;
       setLoading(false);
       notifySuccess(message);
