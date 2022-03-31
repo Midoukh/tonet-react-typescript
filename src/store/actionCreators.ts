@@ -32,6 +32,12 @@ export const toggleReportBugVis = (show: boolean): Payload => {
     payload: show,
   };
 };
+export const toggleShareVis = (show: boolean): Payload => {
+  return {
+    type: actionTypes.TOGGLE_SHARE_VISIBILITY,
+    payload: show,
+  };
+};
 export const toggleReviewVis = (show: boolean): Payload => {
   return {
     type: actionTypes.TOGGLE_REVIEW_VISIBILITY,

@@ -24,6 +24,7 @@ interface StoreState {
   SourceImage: SourceImage;
   reportBugVis: boolean;
   reviewVis: boolean;
+  shareVis: boolean;
   fetchCategory: FetchCategory;
   ipAdress: string;
 }

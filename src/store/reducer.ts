@@ -19,6 +19,7 @@ const TargetImageURl = await base64ToURL(
   TargetImageBase64 !== {} ? TargetImageBase64.base64 : ""
 );
 const reportBugVis: boolean = false;
+const shareVis: boolean = false;
 const currentImageCategory: string = "";
 const fetchCategory = {
   currentImageCategory,
@@ -37,6 +38,7 @@ const initialState: StoreState = {
   fetchCategory,
   reviewVis,
   ipAdress: ip || "",
+  shareVis,
 };
 
 const reducer = (state: any = initialState, action: any) => {
@@ -71,6 +73,11 @@ const reducer = (state: any = initialState, action: any) => {
       return {
         ...state,
         reviewVis: action.payload,
+      };
+    case actionTypes.TOGGLE_SHARE_VISIBILITY:
+      return {
+        ...state,
+        shareVis: action.payload,
       };
     default:
       return state;

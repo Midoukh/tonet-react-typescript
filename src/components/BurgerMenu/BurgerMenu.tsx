@@ -11,17 +11,21 @@ import Footer from "./Footer/Footer";
 import {
   toggleReportBugVis,
   toggleReviewVis,
+  toggleShareVis,
 } from "../../store/actionCreators";
 import "./style.css";
 
 const BurgerMenu: FC = ({}) => {
   const dispatch = useDispatch();
 
-  const handleShowReportBug = () => {
+  const handleShowReportBug = (): void => {
     dispatch(toggleReportBugVis(true));
   };
-  const handleShowReview = () => {
+  const handleShowReview = (): void => {
     dispatch(toggleReviewVis(true));
+  };
+  const handleShowShare = (): void => {
+    dispatch(toggleShareVis(true));
   };
   return (
     <Menu pageWrapId="page-wrap" outerContainerId="App">
@@ -68,6 +72,7 @@ const BurgerMenu: FC = ({}) => {
         </ListItem>
         <ListItem w="100%">
           <Button
+            onClick={handleShowShare}
             color="blue.400"
             w="100%"
             display="flex"
