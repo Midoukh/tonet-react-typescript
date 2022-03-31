@@ -53,6 +53,9 @@ const Emoji: FC<Props> = ({ reaction, isSelected, setActiveReaction }) => {
         width="80%"
         isStopped={!isSelected}
         isClickToPauseDisabled
+        style={{
+          border: isSelected ? "1px solid #3182CE" : "1px solid transparent",
+        }}
       />
       {isSelected && (
         <Text
