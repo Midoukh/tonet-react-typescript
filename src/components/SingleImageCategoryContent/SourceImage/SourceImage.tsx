@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { base64ToURL } from "../../../utils/helpers/imageMan";
 
 import ReactImage from "../../Image/Image";
 interface Props {
@@ -7,10 +8,11 @@ interface Props {
   width: string;
   show: string;
   placeholderColor: string;
-  id: number;
-  selectedSourceImageId: number;
+  id: number | string;
+  selectedSourceImageId: number | string;
   handleSelectSourceImage(): void;
   loading: boolean;
+  promise?: boolean;
 }
 
 const SourceImage: FC<Props> = ({
@@ -22,11 +24,22 @@ const SourceImage: FC<Props> = ({
   handleSelectSourceImage,
   selectedSourceImageId,
   loading,
+  promise,
 }) => {
-  useEffect(() => {}, [selectedSourceImageId]);
+  const [srcImgPromise, setSrcImgPromise] = useState<string>("");
+
+  const handlePromisedSrcImg = async (): Promise<any> => {
+    if (promise) {
+      setSrcImgPromise(await base64ToURL(srcImg));
+    }
+  };
+
+  useEffect(() => {
+    handlePromisedSrcImg();
+  }, [selectedSourceImageId]);
   return (
     <ReactImage
-      srcImg={srcImg}
+      srcImg={srcImgPromise || srcImg}
       height="xl"
       width={width}
       show={show}

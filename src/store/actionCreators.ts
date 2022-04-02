@@ -44,3 +44,9 @@ export const toggleReviewVis = (show: boolean): Payload => {
     payload: show,
   };
 };
+export const toggleUploadInputsVis = (show: boolean): Payload => {
+  return {
+    type: actionTypes.IS_UPLOAD_INPUTS_EXPANDED,
+    payload: show,
+  };
+};

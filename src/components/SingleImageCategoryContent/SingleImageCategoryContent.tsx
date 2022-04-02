@@ -53,7 +53,6 @@ const Content: FC = ({}) => {
       throw Error("no target image available");
     }
     return targets.filter((upImg: UploadedItem) => upImg.active)[0];
-    
   };
   useEffect(() => {}, []);
   return (

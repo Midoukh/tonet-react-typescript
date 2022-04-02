@@ -25,6 +25,7 @@ interface StoreState {
   reportBugVis: boolean;
   reviewVis: boolean;
   shareVis: boolean;
+  uploadInputsVis: boolean;
   fetchCategory: FetchCategory;
   ipAdress: string;
 }
@@ -32,6 +33,7 @@ interface SourceImage {
   src: string;
   isUrl: boolean;
 }
+
 interface ActionType {
   type: string;
   payload: any;
@@ -43,6 +45,7 @@ interface UploadedItem {
   id: string;
   name: string;
   active?: boolean;
+  avg_color?: string;
 }
 
 interface Favorite {

@@ -10,11 +10,14 @@ import React, {
 import { Box, Heading, Flex, Text, Input, Button } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { BsImageAlt } from "react-icons/bs";
-import { IoIosAddCircleOutline } from "react-icons/io";
+import { BiHide, BiShowAlt } from "react-icons/bi";
 import { LocalStrge } from "../../utils/helpers/localStrge";
 import { lengthLimiter } from "../../utils/helpers/arrays";
 import { v4 as uuid } from "uuid";
-import { uploadTargetImage as uploadImageAction } from "../../store/actionCreators";
+import {
+  uploadTargetImage as uploadImageAction,
+  toggleUploadInputsVis,
+} from "../../store/actionCreators";
 import {
   imageToBase64,
   checkIfImageUrlIsValid,
@@ -23,14 +26,16 @@ import {
 import { toast } from "react-toastify";
 import { expressApi } from "../../lib/axios";
 
+type UploadType = "target" | "source";
+
 interface Props {
-  label?: string;
+  type: UploadType;
 }
 type InputEvent = ChangeEvent<HTMLInputElement>;
 type DropEvent = DragEvent<HTMLDivElement>;
 type mouseEvent = MouseEventHandler<HTMLDivElement>;
 
-const Upload: FC<Props> = ({ label }) => {
+const Upload: FC<Props> = ({ type }) => {
   const notify = (message: string) => toast(message);
   const notifyError = (message: string) => toast.error(message);
 
@@ -39,11 +44,15 @@ const Upload: FC<Props> = ({ label }) => {
   const [validUrl, setValidUrl] = useState(true);
   const [loading, setLoading] = useState(false);
   const [styleOnDragBegin, setStyleOnDragBegin] = useState(false);
-  const [dragStart, setDragStart] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
+  const [localStorageKey] = useState(
+    type === "target" ? "targets" : "custom-source-images"
+  );
+
   const dispatch = useDispatch();
   const localStrge = new LocalStrge();
-  const targetImages: any = lengthLimiter(
-    JSON.parse(localStrge.get("targets") || "[]") || [],
+  const previouslyUplImages: any = lengthLimiter(
+    JSON.parse(localStrge.get(localStorageKey) || "[]") || [],
     5
   );
 
@@ -71,15 +80,22 @@ const Upload: FC<Props> = ({ label }) => {
       });
 
       //get the base64 from the server so we can store it locally
+      console.log(response);
+      const { avg_color } = response.data;
       const { base64 } = response.data.compressedImage;
       // const base64 = (await imageToBase64(output)) || "";
 
       //create a URL from the image to be use as a src for <img />
       //because base64 are to fucking ugly and big
-      const localImageUrl = window.URL.createObjectURL(file);
       setImageName(file.name);
-      handleStoreImageInLocalStorage(base64, file.name);
-      dispatch(uploadImageAction(localImageUrl));
+      handleStoreImageInLocalStorage(base64, file.name, avg_color);
+      if (type === "target") {
+        console.log(
+          "Because type is " + type + " we updated the current target image"
+        );
+        const localImageUrl = window.URL.createObjectURL(file);
+        dispatch(uploadImageAction(localImageUrl));
+      }
     } catch (error) {
       notify("Can't Store it locally for some reason");
       console.log("This error occured in the Upload comp");
@@ -88,6 +104,7 @@ const Upload: FC<Props> = ({ label }) => {
   };
   const handleOnImageChange = async (e: InputEvent): Promise<void> => {
     //get the image file from the user
+    console.log(e.target);
     const uploadedImage = e.target.files![0];
     await handleUploadedOrDroppedFile(uploadedImage);
   };
@@ -117,8 +134,10 @@ const Upload: FC<Props> = ({ label }) => {
           return;
         }
         setLoading(false);
-        const base64ToUrl = await base64ToURL(base64);
-        dispatch(uploadImageAction(base64ToUrl));
+        if (type === "target") {
+          const base64ToUrl = await base64ToURL(base64);
+          dispatch(uploadImageAction(base64ToUrl));
+        }
         handleStoreImageInLocalStorage(base64, name);
       }
     } catch (error: any) {
@@ -137,15 +156,15 @@ const Upload: FC<Props> = ({ label }) => {
   };
   const handleStoreImageInLocalStorage = (
     image: string,
-    name: string
+    name: string,
+    avgColor?: string
   ): void => {
     //image is base64
     //create a new Uploaded Item object
-    let updatedTargetImages: UploadedItem[] = [];
-    if (targetImages.length > 1) {
+    let updatedImages: UploadedItem[] = [];
+    if (previouslyUplImages.length) {
       //set all the old items active prop to false
-      console.log("The target images lenght is", targetImages.length);
-      updatedTargetImages = targetImages.map((item: UploadedItem) => {
+      updatedImages = previouslyUplImages.map((item: UploadedItem) => {
         item.active = false;
         return item;
       });
@@ -157,12 +176,14 @@ const Upload: FC<Props> = ({ label }) => {
       date: new Date(),
       base64: image,
       active: true,
+      avg_color: avgColor,
     };
     //add the new target image to local storage and make sure there
     //is no duplicates
-    updatedTargetImages.push(newUploadedItem);
-    const newTargetImages = [...new Set(updatedTargetImages)];
-    localStrge.set("targets", JSON.stringify(newTargetImages));
+    console.log("images before storing locally", updatedImages);
+    updatedImages.push(newUploadedItem);
+    const newImages = [...new Set(updatedImages)];
+    localStrge.set(localStorageKey, JSON.stringify(newImages));
   };
 
   const handleDropFile = async (ev: DropEvent): Promise<any> => {
@@ -192,16 +213,24 @@ const Upload: FC<Props> = ({ label }) => {
     setStyleOnDragBegin(true);
     e.preventDefault();
   };
+  const handleToggleDetailsVis = (): void => {
+    setShowDetails(!showDetails);
+    dispatch(toggleUploadInputsVis(!showDetails));
+  };
   return (
-    <Box m="1rem 0">
+    <Box m="1rem 0" onClick={() => console.log(previouslyUplImages)}>
       <Heading as="h3" color="white">
         Upload
       </Heading>
-      {label && (
-        <Flex align="center" m="0.5rem">
-          <IoIosAddCircleOutline color="white" />
+      {type === "source" && (
+        <Flex align="center" m="0.5rem" onClick={handleToggleDetailsVis}>
+          {showDetails ? (
+            <BiHide cursor="pointer" color="white" />
+          ) : (
+            <BiShowAlt cursor="pointer" color="white" />
+          )}
           <Text color="whiteAlpha.700" ml="0.5rem">
-            {label}
+            Add your custom images
           </Text>
         </Flex>
       )}
@@ -210,69 +239,75 @@ const Upload: FC<Props> = ({ label }) => {
           Image name: {imageName}
         </Text>
       )}
-      <label htmlFor="upload-input">
-        <Box
-          ref={dropZoneRef}
-          onDrop={handleDropFile}
-          onDragOver={handleDragOver}
-          border="1px dashed rgba(255,255,255,.8)"
-          m="1rem 0"
-          p="1.8rem"
-        >
-          <Flex
-            direction="column"
-            align="center"
-            justify="center"
-            textAlign="center"
-            cursor="pointer"
-          >
-            <BsImageAlt size={20} color="white" />
-            <Text>Drag and Drop or Browse</Text>
-          </Flex>
-        </Box>
-      </label>
-      <Input
-        type="file"
-        name="file"
-        accept="image/*"
-        onChange={handleOnImageChange}
-        visibility="hidden"
-        position="absolute"
-        id="upload-input"
-        maxW="100%"
-      />
-      <form onSubmit={handleUploadImageByUrl}>
-        <label>
-          <Flex
-            direction="column"
-            justify="space-between"
-            align="flex-start"
-            h="20vh"
-          >
-            <Text>URL</Text>
-            <Input
-              isInvalid={!validUrl}
-              errorBorderColor="red.300"
-              type="url"
-              value={imageURL}
-              onChange={(e: InputEvent) => setImageURL(e.target.value)}
-              placeholder="Type your image url here"
-              pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
-            />
-            <Button
-              type="submit"
-              disabled={imageURL.length < 10 || loading}
-              colorScheme="blue"
-              variant="outline"
-              w="100%"
+      {showDetails && (
+        <>
+          <label htmlFor={`upload-input-${localStorageKey}`}>
+            <Box
+              ref={dropZoneRef}
+              onDrop={handleDropFile}
+              onDragOver={handleDragOver}
+              border="1px dashed rgba(255,255,255,.8)"
+              m="1rem 0"
+              p="1.8rem"
             >
-              {loading ? "Loading..." : "Upload"}
-            </Button>
-          </Flex>
-        </label>
-      </form>
-      <br />
-      <br />
+              <Flex
+                direction="column"
+                align="center"
+                justify="center"
+                textAlign="center"
+                cursor="pointer"
+              >
+                <BsImageAlt size={20} color="white" />
+                <Text>Drag and Drop or Browse</Text>
+              </Flex>
+            </Box>
+          </label>
+
+          <Input
+            type="file"
+            name="file"
+            accept="image/*"
+            onChange={handleOnImageChange}
+            visibility="hidden"
+            position="absolute"
+            id={`upload-input-${localStorageKey}`}
+            maxW="100%"
+          />
+
+          <form onSubmit={handleUploadImageByUrl}>
+            <label>
+              <Flex
+                direction="column"
+                justify="space-between"
+                align="flex-start"
+                h="20vh"
+              >
+                <Text>URL</Text>
+                <Input
+                  isInvalid={!validUrl}
+                  errorBorderColor="red.300"
+                  type="url"
+                  value={imageURL}
+                  onChange={(e: InputEvent) => setImageURL(e.target.value)}
+                  placeholder="Type your image url here"
+                  pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+                />
+                <Button
+                  type="submit"
+                  disabled={imageURL.length < 10 || loading}
+                  colorScheme="blue"
+                  variant="outline"
+                  w="100%"
+                >
+                  {loading ? "Loading..." : "Upload"}
+                </Button>
+              </Flex>
+            </label>
+          </form>
+          <br />
+          <br />
+        </>
+      )}
     </Box>
   );
 };

@@ -33,7 +33,7 @@ const BurgerMenu: FC = ({}) => {
         <ReactImage srcImg={logo} height="md" />
       </div>
       <div className="menu-item">
-        <Upload />
+        <Upload type="target" />
       </div>
       <List>
         <ListItem className="menu-item" w="100%" mb="0.5rem">

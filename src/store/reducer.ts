@@ -20,6 +20,7 @@ const TargetImageURl = await base64ToURL(
 );
 const reportBugVis: boolean = false;
 const shareVis: boolean = false;
+const uploadInputsVis: boolean = false;
 const currentImageCategory: string = "";
 const fetchCategory = {
   currentImageCategory,
@@ -39,6 +40,7 @@ const initialState: StoreState = {
   reviewVis,
   ipAdress: ip || "",
   shareVis,
+  uploadInputsVis,
 };
 
 const reducer = (state: any = initialState, action: any) => {
@@ -78,6 +80,11 @@ const reducer = (state: any = initialState, action: any) => {
       return {
         ...state,
         shareVis: action.payload,
+      };
+    case actionTypes.IS_UPLOAD_INPUTS_EXPANDED:
+      return {
+        ...state,
+        uploadInputsVis: action.payload,
       };
     default:
       return state;

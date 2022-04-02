@@ -24,6 +24,7 @@ interface ImageProps {
   selected?: boolean;
   onClick?(e: object): any;
   loading?: boolean;
+  cStyle?: CSSProperties;
 }
 
 const MyImageComponent: FC<ImageProps> = ({
@@ -38,6 +39,7 @@ const MyImageComponent: FC<ImageProps> = ({
   selected,
   onClick,
   loading,
+  cStyle,
 }) => {
   const h =
     height === "md"
@@ -75,6 +77,7 @@ const MyImageComponent: FC<ImageProps> = ({
         border={customBorder ? selectedSourceImageStyle : "unset"}
         onClick={onClick && onClick}
         filter={selected ? "grayscale(80%)" : "unset"}
+        style={cStyle && cStyle}
       />
       {loading && selected && <WaterFilling />}
     </Box>

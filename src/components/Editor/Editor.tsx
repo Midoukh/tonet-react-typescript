@@ -11,6 +11,7 @@ import { v4 as uuid } from "uuid";
 import { IoArrowBackSharp as GoBackIcon } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
 
+import CustomImages from "../CustomImages/CustomImages";
 import Categories from "./Categories/Categories";
 import SingleImageContent from "../SingleImageCategoryContent/SingleImageCategoryContent";
 import { fetchImageCategory } from "../../store/actionCreators";
@@ -156,7 +157,8 @@ const Editor = ({}) => {
             )}
           </TabPanel>
           <TabPanel>
-            <Upload label="Add your custom images" />
+            <Upload type="source" />
+            <CustomImages />
           </TabPanel>
           <TabPanel>
             <UserUploads />
